@@ -5,9 +5,9 @@ multilingual = false
 src = "src"
 title = "lua-note"
 
-[preprocessor.theme]
-pagetoc = true
-sidebar-width = "250px"
+# [preprocessor.theme]
+# pagetoc = true
+# sidebar-width = "250px"
 
 [output.html]
 default-theme = "ayu"
