@@ -11,7 +11,7 @@ title = "lua-note"
 
 [output.html]
 default-theme = "ayu"
-git-repository-url = "https://github.com/zjp-CN/translation"
+git-repository-url = "https://github.com/zjp-CN/lua-note"
 additional-css = ["theme/pagetoc.css"]
 additional-js = ["theme/pagetoc.js"]
 
