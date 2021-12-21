@@ -1,6 +1,9 @@
 # 入门
 
 [lua 官网](http://www.lua.org/) | [Reference 手册](https://www.lua.org/manual) | [Getting started][Getting started]
+
+> 该笔记系列主要整理自 Roberto Ierusalimschy 的 *Programming in Lua* （2017，第四版） 一书。以 Lua5.3 为主。
+
 ## 版本历史
 
 | 正式版本号   | 发布年份[^year] | *Programming in Lua* |
