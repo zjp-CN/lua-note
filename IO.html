@@ -1,0 +1,446 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>I/O 功能 - lua-note</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/pagetoc.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Getting-Started.html"><strong aria-hidden="true">1.</strong> 入门</a></li><li class="chapter-item expanded "><a href="Types.html"><strong aria-hidden="true">2.</strong> 基本类型</a></li><li class="chapter-item expanded "><a href="IO.html" class="active"><strong aria-hidden="true">3.</strong> I/O 功能</a></li><li class="chapter-item expanded "><a href="Syntax.html"><strong aria-hidden="true">4.</strong> 语法细节</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">lua-note</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/zjp-CN/lua-note" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="io-功能"><a class="header" href="#io-功能">I/O 功能</a></h1>
+<p>lua 只提供标准 ISO C 提供的功能，其标准库仅实现了基础的 I/O。大部分 I/O 功能是由外部库或者宿主语言提供的。</p>
+<h2 id="简单-io-模型"><a class="header" href="#简单-io-模型">简单 I/O 模型</a></h2>
+<p>基于当前输入/输出流：</p>
+<ul>
+<li><code>io.input(filename)</code> 读取 <code>filename</code> 文件的内容</li>
+<li><code>io.write(a, b, c)</code> 与 <code>print(a, b, c)</code> 类似，但 <code>io.write</code>
+不会增加额外的符号（制表符、换行等），而且可以重定向输出</li>
+<li><code>io.read()</code> 从当前输入流输入读取一行，等价于 <code>io.read(&quot;l&quot;)</code>
+（可以读取标准输入也可以通过重定向输入读取文件）。此函数参数如下：</li>
+</ul>
+<table><thead><tr><th>参数<sup class="footnote-reference"><a href="#read-arg">1</a></sup></th><th>说明<sup class="footnote-reference"><a href="#read-res">2</a></sup></th></tr></thead><tbody>
+<tr><td>&quot;a&quot;</td><td>读取整个文件的内容<sup class="footnote-reference"><a href="#read-all">3</a></sup></td></tr>
+<tr><td>&quot;l&quot;</td><td>读取下一行（丢弃换行符）</td></tr>
+<tr><td>&quot;L&quot;</td><td>读取下一行（保留换行符）</td></tr>
+<tr><td>&quot;n&quot;</td><td>读取一个数字<sup class="footnote-reference"><a href="#read-n">4</a></sup></td></tr>
+<tr><td>bytes （非负整数）</td><td>读取 bytes 字节大小的数据<sup class="footnote-reference"><a href="#read-bytes">5</a></sup></td></tr>
+</tbody></table>
+<div class="footnote-definition" id="read-arg"><sup class="footnote-definition-label">1</sup>
+<p>在 lua5.2 及之前的版本，该参数需要使用 <code>*</code> 前缀，比如 <code>io.read(&quot;*a&quot;)</code></p>
+</div>
+<div class="footnote-definition" id="read-res"><sup class="footnote-definition-label">2</sup>
+<p>除了 <code>n</code>，其他参数情况下都返回 <code>string</code> 类型</p>
+</div>
+<div class="footnote-definition" id="read-all"><sup class="footnote-definition-label">3</sup>
+<p>一般用于读文件，而不是读取标准输入（比如从终端输入的内容）</p>
+</div>
+<div class="footnote-definition" id="read-n"><sup class="footnote-definition-label">4</sup>
+<p>在跳过空格之后，如果还没找到数字，那么返回 nil，找到数字返回 <code>number</code> 类型</p>
+</div>
+<div class="footnote-definition" id="read-bytes"><sup class="footnote-definition-label">5</sup>
+<p><code>io.read(0)</code> 返回空串（表示文件还有待读取的内容）或者 <code>nil</code>（表示无内容待读）</p>
+</div>
+<p>按行读取文件：</p>
+<pre><code class="language-lua">-- 方法一：io.read(&quot;L&quot;)
+for count = 1, math.huge do
+  local line = io.read(&quot;L&quot;)
+  if line == nil then break end
+  io.write(string.format(&quot;%6d &quot;, count), line)
+end
+
+-- 方法二：io.lines()
+local count = 0
+for line in io.lines() do
+  count = count + 1
+  io.write(string.format(&quot;%6d &quot;, count), line, &quot;\n&quot;)
+end
+</code></pre>
+<p>按块（固定大小）读取文件：</p>
+<pre><code class="language-lua">while true do
+  local block = io.read(2^13) -- block size is 8K
+  if not block then break end
+  io.write(block)
+end
+</code></pre>
+<p><code>io.read</code> 可以接收可变长度的参数，来以不同方式读取同一个文件的不同区域：</p>
+<pre><code class="language-lua">-- 对于以下 xx.txt 文件内容
+-- 6.0 -3.23 15e12
+-- 4.3 234 1000001
+-- 以下代码写在 xx.lua 文件中
+-- 使用 `lua xx.lua &lt; xx.txt` 命令运行的打印结果
+-- 6.0	-3.23	 15e12	4.3 234 1000001
+local n1, n2, n3, n4 = io.read(&quot;n&quot;, &quot;n&quot;, &quot;l&quot;, &quot;l&quot;)
+print(n1, n2, n3, n4)
+</code></pre>
+<h2 id="完整的-io-模型"><a class="header" href="#完整的-io-模型">完整的 I/O 模型</a></h2>
+<ul>
+<li><code>io.open(filename, mode)</code> 打开文件，等价于 C 的 <code>fopen</code> 函数
+<ul>
+<li>其中 <code>mode</code> 有
+<ul>
+<li><code>&quot;r&quot;</code> 读权限</li>
+<li><code>&quot;w&quot;</code> 写权限（擦除原文件所有内容）</li>
+<li><code>&quot;a&quot;</code> 追加写</li>
+<li><code>&quot;b&quot;</code> 以二进制方式打开</li>
+</ul>
+</li>
+<li>该函数返回新的文件流</li>
+<li>遇到错误时，返回 <code>nil</code>、错误信息和依赖于系统的错误码</li>
+<li>一般使用 <code>assert(io.open(filename, mode))</code> 来检查错误</li>
+<li>正常打开文件之后，调用 <code>read</code> 或者 <code>write</code> 方法来读写
+<pre><code class="language-lua">local f = assert(io.open(filename, &quot;r&quot;))
+local t = f:read(&quot;a&quot;)
+f:close()
+</code></pre>
+</li>
+</ul>
+</li>
+<li>标准输入/输出流：
+<ul>
+<li><code>io.stderr:write(message)</code> 把错误信息打印到标准错误流</li>
+<li><code>io.input():read(args)</code> 的简写是 <code>io.read(args)</code></li>
+<li><code>io.input():lines(args)</code> 接收与 <code>io.read</code> 相同的参数<sup class="footnote-reference"><a href="#read-lines">6</a></sup>，以读取方式打开一个文件流，返回迭代器
+<pre><code class="language-lua">-- 迭代 8K 大小的块，把输入流的内容复制到输出流
+for block in io.input():lines(2^13) do
+  io.write(block)
+end
+</code></pre>
+</li>
+<li><code>io.output():write(...)</code> 的简写是 <code>io.write(...)</code>
+<pre><code class="language-lua">local fname = &quot;a.txt&quot;
+local a = io.output(fname) -- 如果文件不存在，则创建
+print(a:write(1)) -- 覆盖写入
+print(a:write(2))
+print(a:close())
+local a = io.input(fname)
+print(a:read()) -- 打印 12
+</code></pre>
+</li>
+</ul>
+</li>
+<li><code>io.tmpfile()</code> 返回临时文件流，当程序结束时，该文件自动被删除</li>
+<li><code>io.flush()</code> 或 <code>f:flush()</code> 把剩余内容写进流</li>
+<li><code>f:setvbuf(mode, size)</code> 设置流的缓冲方式和大小：
+<ul>
+<li><code>&quot;no&quot;</code> mode 不设置缓冲</li>
+<li><code>&quot;full&quot;</code> mode 当缓冲满了或者显式调用 <code>f:flush()</code> 之后才写入流</li>
+<li><code>&quot;line&quot;</code> mode 在换行或者终端新输入之前缓冲</li>
+<li><code>size</code> 在 <code>&quot;full&quot;</code> 和 <code>&quot;line&quot;</code> mode 下是可选的</li>
+<li>在大多数操作系统上，stderr 是无缓冲的；stdout 是行缓冲的，如果对标准输出写入不完整的行，可能需要 
+<code>flush</code> 才能看到输出结果</li>
+</ul>
+</li>
+<li><code>f:seek(whence, offset)</code> 获取并设置文件流的当前位置（位置 0 表示文件的起点，所以 offset 最低为 0）
+<ul>
+<li><code>f:seek(&quot;set&quot;, n)</code> 设置当前位置为 n（距离起点 n 字节）</li>
+<li><code>f:seek(&quot;cur&quot;)</code> 或者 <code>f:seek()</code> 获取当前位置</li>
+<li><code>f:seek(&quot;end&quot;)</code> 返回文件的终点位置，即文件的字节大小，此时落在终点位置</li>
+<li><code>f:seek(&quot;cur&quot;, n)</code> 和 <code>f:seek(&quot;end&quot;, n)</code> 意义不明，<strong>可能</strong>与 <code>f:seek(&quot;set&quot;, n)</code>
+一样（可变参数的缺点：如果不列举完全一个函数在不同参数下的功能，那么它的用法很难搞懂）
+<pre><code class="language-lua">-- 获取文件大小，但不移动当前位置
+function fsize (file)
+ local current = file:seek()   -- save current position
+ local size = file:seek(&quot;end&quot;) -- get file size
+ file:seek(&quot;set&quot;, current)     -- restore position
+ return size
+end
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<div class="footnote-definition" id="read-lines"><sup class="footnote-definition-label">6</sup>
+<p>这在 lua5.2 之后才支持。</p>
+</div>
+<h2 id="os-函数"><a class="header" href="#os-函数"><code>os</code> 函数</a></h2>
+<ul>
+<li><code>os.rename</code> 重命名文件</li>
+<li><code>os.remove</code> 删除文件</li>
+<li><code>os.exit</code> 终止程序执行：
+<ul>
+<li>第一个参数是可选的：0 （或者 <code>true</code>）表示正常执行</li>
+<li>第二个可选参数为 <code>true</code> 表示调用 finalizers，根据状态释放所有内存。通常无需 
+finalization，因为大多数操作系统在进程退出时释放该进程的所有资源。</li>
+</ul>
+</li>
+<li><code>os.getenv</code> 获取环境变量。如 <code>os.getenv(&quot;HOME&quot;)</code> 获取主目录路径。如果环境变量不存在，函数返回 <code>nil</code>。</li>
+<li><code>os.execute(&quot;xx cmd&quot;)</code> 执行系统命令，等价于 C 的 <code>system</code> 函数，它执行命令之后，返回三个部分：
+<ul>
+<li><code>Bolean</code>：<code>true</code> 表示执行成功</li>
+<li><code>string</code>：<code>exit</code> 表示正常退出；<code>signal</code> 表示被中断</li>
+<li><code>number</code>：程序返回的状态码</li>
+</ul>
+</li>
+<li><code>io.popen</code> 与 <code>os.execute</code> 会在执行命令的时候创建流：
+<ul>
+<li><code>io.popen(cmd, &quot;r&quot;)</code> 表示读取命令的结果，等价于 <code>io.popen(cmd)</code></li>
+<li><code>io.popen(cmd, &quot;w&quot;)</code> 表示往命令的流里写数据
+<pre><code class="language-lua">-- 获取 `ls` 命令的结果
+local f = io.popen(&quot;ls .&quot;, &quot;r&quot;)
+local dir = {}
+for entry in f:lines() do
+  dir[#dir + 1] = entry
+end
+
+-- 往命令的流里写数据
+local f = io.popen(cmd, &quot;w&quot;)
+f:write([[xxx]])
+f:close()
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p><code>os.execute</code> 和 <code>io.popen</code> 是依赖于操作系统的。</p>
+<p>对于基础的目录和文件操作，可使用 <code>LuaFileSystem</code> 库；需要 POSIX.1 标准的功能则使用 <code>luaposix</code> 库。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="Types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="Syntax.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="Types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="Syntax.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="theme/pagetoc.js"></script>
+    </body>
+</html>
